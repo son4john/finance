@@ -10,7 +10,7 @@ def present_value(future_value, discount_rate, periods):
     Returns:
     - float: The present value.
     """
-    return future_value / ((1 + discount_rate) ** periods)
+    return round(future_value / ((1 + discount_rate) ** periods), 2)
 
 def future_value(present_value, interest_rate, periods):
     """
