@@ -78,6 +78,48 @@ def amortization_schedule(principal, annual_rate, years):
     return schedule
 
 
+def extra_payment_savings(principal, annual_rate, years, extra_payment):
+    """
+    Calculate how much sooner a loan is paid off with additional monthly principal payments.
+
+    Parameters:
+    - principal (float): The loan amount.
+    - annual_rate (float): The annual interest rate (as a decimal, e.g., 0.05 for 5%).
+    - years (int): The original loan term in years.
+    - extra_payment (float): Additional principal paid each month on top of the standard payment.
+
+    Returns:
+    - dict: months_saved, interest_saved, original_months, new_months,
+            original_interest, new_interest
+    """
+    monthly_payment = pmt(principal, annual_rate, years)
+    r = annual_rate / 12
+
+    def simulate(extra):
+        balance = principal
+        total_interest = 0
+        months = 0
+        while balance > 0:
+            interest = round(balance * r, 2)
+            total_interest += interest
+            balance -= round(monthly_payment - interest + extra, 2)
+            months += 1
+        return months, round(total_interest, 2)
+
+    original_months, original_interest = simulate(0)
+    new_months, new_interest = simulate(extra_payment)
+
+    return {
+        "original_months": original_months,
+        "new_months": new_months,
+        "months_saved": original_months - new_months,
+        "years_saved": round((original_months - new_months) / 12, 1),
+        "original_interest": original_interest,
+        "new_interest": new_interest,
+        "interest_saved": round(original_interest - new_interest, 2)
+    }
+
+
 # Example usage:
 pv = 1000       # $1,000 initial investment
 rate = 0.05     # 5% annual interest
