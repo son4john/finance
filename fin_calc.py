@@ -1,62 +1,57 @@
 def present_value(future_value, discount_rate, periods):
-    """
-    Calculate the present value of a future amount of money.
+    """Calculate the present value of a future amount of money.
 
-    Parameters:
-    - future_value (float): The amount of money in the future.
-    - discount_rate (float): The annual discount rate (as a decimal, e.g., 0.05 for 5%).
-    - periods (int): The number of periods (usually years) until the future value is received.
+    Args:
+        future_value (float): The amount of money in the future.
+        discount_rate (float): The annual discount rate as a decimal (e.g., 0.05 for 5%).
+        periods (int): The number of periods until the future value is received.
 
     Returns:
-    - float: The present value.
+        float: The present value.
     """
     return round(future_value / ((1 + discount_rate) ** periods), 2)
 
-def future_value(present_value, interest_rate, periods):
-    """
-    Calculate the future value of money.
 
-    Parameters:
-    present_value (float): The initial amount of money.
-    interest_rate (float): The interest rate per period (as a decimal, e.g., 0.05 for 5%).
-    periods (int): The number of periods (e.g., years).
+def future_value(present_value, interest_rate, periods):
+    """Calculate the future value of money.
+
+    Args:
+        present_value (float): The initial amount of money.
+        interest_rate (float): The interest rate per period as a decimal (e.g., 0.05 for 5%).
+        periods (int): The number of periods (e.g., years).
 
     Returns:
-    float: The future value of the investment.
+        float: The future value of the investment.
     """
-    fv = present_value * (1 + interest_rate) ** periods
-    return round(fv, 2)
+    return round(present_value * (1 + interest_rate) ** periods, 2)
+
 
 def pmt(principal, annual_rate, years):
-    """
-    Calculate the fixed periodic (monthly) payment for a loan.
+    """Calculate the fixed monthly payment for a loan.
 
-    Parameters:
-    - principal (float): The loan amount.
-    - annual_rate (float): The annual interest rate (as a decimal, e.g., 0.05 for 5%).
-    - years (int): The loan term in years.
+    Args:
+        principal (float): The loan amount.
+        annual_rate (float): The annual interest rate as a decimal (e.g., 0.05 for 5%).
+        years (int): The loan term in years.
 
     Returns:
-    - float: The fixed monthly payment.
+        float: The fixed monthly payment.
     """
     r = annual_rate / 12
     n = years * 12
-    payment = principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
-    return round(payment, 2)
+    return round(principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1), 2)
 
 
 def amortization_schedule(principal, annual_rate, years):
-    """
-    Generate a full amortization schedule for a loan.
+    """Generate a full amortization schedule for a loan.
 
-    Parameters:
-    - principal (float): The loan amount.
-    - annual_rate (float): The annual interest rate (as a decimal, e.g., 0.05 for 5%).
-    - years (int): The loan term in years.
+    Args:
+        principal (float): The loan amount.
+        annual_rate (float): The annual interest rate as a decimal (e.g., 0.05 for 5%).
+        years (int): The loan term in years.
 
     Returns:
-    - list of dicts: Each entry contains payment number, payment amount,
-                     principal paid, interest paid, and remaining balance.
+        list[dict]: Each entry contains month, payment, principal, interest, and balance.
     """
     monthly_payment = pmt(principal, annual_rate, years)
     r = annual_rate / 12
@@ -72,25 +67,24 @@ def amortization_schedule(principal, annual_rate, years):
             "payment": monthly_payment,
             "principal": principal_paid,
             "interest": interest,
-            "balance": max(balance, 0)
+            "balance": max(balance, 0),
         })
 
     return schedule
 
 
 def extra_payment_savings(principal, annual_rate, years, extra_payment):
-    """
-    Calculate how much sooner a loan is paid off with additional monthly principal payments.
+    """Calculate how much sooner a loan is paid off with extra monthly principal payments.
 
-    Parameters:
-    - principal (float): The loan amount.
-    - annual_rate (float): The annual interest rate (as a decimal, e.g., 0.05 for 5%).
-    - years (int): The original loan term in years.
-    - extra_payment (float): Additional principal paid each month on top of the standard payment.
+    Args:
+        principal (float): The loan amount.
+        annual_rate (float): The annual interest rate as a decimal (e.g., 0.05 for 5%).
+        years (int): The original loan term in years.
+        extra_payment (float): Additional principal paid each month on top of the standard payment.
 
     Returns:
-    - dict: months_saved, interest_saved, original_months, new_months,
-            original_interest, new_interest
+        dict: Contains original_months, new_months, months_saved, years_saved,
+              original_interest, new_interest, and interest_saved.
     """
     monthly_payment = pmt(principal, annual_rate, years)
     r = annual_rate / 12
@@ -116,22 +110,13 @@ def extra_payment_savings(principal, annual_rate, years, extra_payment):
         "years_saved": round((original_months - new_months) / 12, 1),
         "original_interest": original_interest,
         "new_interest": new_interest,
-        "interest_saved": round(original_interest - new_interest, 2)
+        "interest_saved": round(original_interest - new_interest, 2),
     }
 
 
-# Example usage:
-pv = 1000       # $1,000 initial investment
-rate = 0.05     # 5% annual interest
-years = 10      # 10 years
+if __name__ == "__main__":
+    fv = future_value(1000, 0.05, 10)
+    print("Future Value: ${:,.2f}".format(fv))
 
-fv = future_value(pv, rate, years)
-print(f"Future Value: ${fv:,.2f}")
-
-# Example usage:
-fv = 1000000       # Future value in dollars
-rate = 0.05     # 5% annual discount rate
-years = 20        # Number of years
-
-pv = present_value(fv, rate, years)
-print(f"Present Value: ${pv:,.2f}")
+    pv = present_value(1000000, 0.05, 20)
+    print("Present Value: ${:,.2f}".format(pv))
