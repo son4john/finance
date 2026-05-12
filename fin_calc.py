@@ -115,8 +115,34 @@ def extra_payment_savings(principal, annual_rate, years, extra_payment):
 
 
 if __name__ == "__main__":
+    # Future Value: $1,000 at 5% over 10 years
     fv = future_value(1000, 0.05, 10)
     print("Future Value: ${:,.2f}".format(fv))
 
+    # Present Value: $1,000,000 in 20 years at 5% discount rate
     pv = present_value(1000000, 0.05, 20)
     print("Present Value: ${:,.2f}".format(pv))
+
+    # PMT: monthly payment on a $300,000 loan at 6% over 30 years
+    monthly = pmt(300000, 0.06, 30)
+    print("Monthly Payment: ${:,.2f}".format(monthly))
+
+    # Amortization Schedule: first 3 months of a $300,000 loan at 6% over 30 years
+    schedule = amortization_schedule(300000, 0.06, 30)
+    print("\nAmortization Schedule (first 3 months):")
+    print("{:<8} {:<12} {:<12} {:<12} {}".format(
+        "Month", "Payment", "Principal", "Interest", "Balance"
+    ))
+    for row in schedule[:3]:
+        print("{:<8} ${:<11,.2f} ${:<11,.2f} ${:<11,.2f} ${:,.2f}".format(
+            row["month"], row["payment"], row["principal"],
+            row["interest"], row["balance"]
+        ))
+
+    # Extra Payment Savings: $200 extra/month on a $300,000 loan at 6% over 30 years
+    savings = extra_payment_savings(300000, 0.06, 30, 200)
+    print("\nExtra Payment Savings ($200/month):")
+    print("Time saved:      {} months ({} years)".format(
+        savings["months_saved"], savings["years_saved"]
+    ))
+    print("Interest saved:  ${:,.2f}".format(savings["interest_saved"]))
